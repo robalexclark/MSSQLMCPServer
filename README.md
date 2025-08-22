@@ -1,13 +1,13 @@
 # MSSQL MCP Server
 
-A lightweight Model Context Protocol (MCP) server for Microsoft SQL Server, written in .NET 9. It exposes tools to execute T‑SQL and to list tables, communicating with MCP‑capable clients over stdio.
+A lightweight Model Context Protocol (MCP) server for Microsoft SQL Server, written in .NET 9. It exposes tools to execute T-SQL and to list tables, communicating with MCP-capable clients over stdio.
 
 ## Features
-- Execute T‑SQL: Run SELECT/INSERT/UPDATE/DELETE and DDL statements.
-- List tables: Enumerates tables across accessible, non‑system databases with row counts.
+- Execute T-SQL: Run SELECT/INSERT/UPDATE/DELETE and DDL statements.
+- List tables: Enumerates tables across accessible, non-system databases with row counts.
 - Stdio transport: Designed to be launched by an MCP client (e.g., Claude Desktop) via stdio.
 - Safe startup: Validates the database connection on launch; fails fast with a clear error.
-- Friendly output: SELECT results are returned as a plain‑text table.
+- Friendly output: SELECT results are returned as a plain-text table.
 - Graceful handling of spatial/UDT values: Returns readable hints when types like `geography`, `geometry`, or `hierarchyid` cannot be materialized.
 
 ## Requirements
@@ -30,7 +30,7 @@ Server=YOUR_SQL_SERVER;Database=YOUR_DB;User Id=USER;Password=SECRET;TrustServer
 On startup, the server tests the connection. If successful, it writes "Database connection test succeeded." and then waits for MCP stdio messages from a client.
 
 ## Using with an MCP Client
-This server is intended to be launched by an MCP‑capable client via stdio. Example Claude Desktop snippet (adjust paths as needed):
+This server is intended to be launched by an MCP-capable client via stdio. Example Claude Desktop snippet (adjust paths as needed):
 
 ```
 "mcpServers": {
@@ -47,28 +47,29 @@ This server is intended to be launched by an MCP‑capable client via stdio. Exa
 ## Tools
 
 ### ExecuteSql
-- Purpose: Execute a T‑SQL statement against the configured server.
+- Purpose: Execute a T-SQL statement against the configured server.
 - Signature: `ExecuteSql(query: string)`
 - Input rules:
-  - Query must be valid Microsoft SQL Server T‑SQL.
-  - Must start with a T‑SQL keyword such as `SELECT`, `WITH`, `INSERT`, `UPDATE`, `DELETE`, `CREATE`, `ALTER`, `DROP`, `EXEC`, etc.
-  - Do not include explanations, markdown, or fences — only the SQL statement.
+  - Query must be valid Microsoft SQL Server T-SQL.
+  - Must start with a T-SQL keyword such as `SELECT`, `WITH`, `INSERT`, `UPDATE`, `DELETE`, `CREATE`, `ALTER`, `DROP`, `EXEC`, etc.
+  - Do not include explanations, markdown, or fences - only the SQL statement.
 - Behavior:
-  - SELECT/WITH: returns a plain‑text table of results.
-  - Non‑SELECT (DML/DDL): returns rows affected.
-  - Spatial/UDT values are returned with a hint if they cannot be materialized (consider casting to text or using server‑side functions like `STAsText()`).
+  - SELECT/WITH: returns a plain-text table of results. If no rows are returned, the exact message is: "Query executed successfully. No rows returned.".
+  - Non-SELECT (DML/DDL): returns rows affected.
+  - Spatial/UDT values are returned with a hint if they cannot be materialized (consider casting to text or using server-side functions like `STAsText()`).
 - Examples:
   - `SELECT TOP 10 * FROM dbo.Users ORDER BY Created DESC;`
   - `INSERT INTO dbo.Products (Name, Price) VALUES ('Widget', 19.99);`
   - `CREATE TABLE dbo.Orders (Id int PRIMARY KEY, CustomerId int NOT NULL);`
 
 ### ListTables
-- Purpose: List all tables in all accessible, non‑system databases for the current login.
+- Purpose: List all tables in all accessible, non-system databases for the current login.
 - Signature: `ListTables()`
 - Columns: `DatabaseName`, `SchemaName`, `TableName`, `RowCount`, `TableType`.
 - Notes:
-  - Excludes system databases and specifically filters out `PURPRArcadian` and `Hangfire`.
-  - Results are returned as a plain‑text table.
+  - Excludes system databases using `database_id > 4` and `HAS_DBACCESS(name) = 1`.
+  - Optional env var `DatabaseList` (comma-separated database names) restricts results to those databases; parameters are used to avoid injection.
+  - Results are returned as a plain-text table.
 
 ## Logging & Errors
 - Logs to console; important events and failures are written with context.
@@ -96,6 +97,7 @@ docker run --rm -e MSSQL_CONNECTION_STRING="..." mssql-mcp:latest
 ```
 
 ## Notes & Limitations
-- T‑SQL only (SQL Server). Other dialects are not supported.
+- T-SQL only (SQL Server). Other dialects are not supported.
 - Queries are executed as provided; exercise caution with DDL/DML operations.
 - Output is plain text (ASCII table) for readability in chat contexts.
+
