@@ -8,7 +8,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace MSSQLMCPServer.IntegrationTests.Tools
 {
-    [ExcludeFromCodeCoverage]
     public partial class SqlExecutionToolTests
     {
         [ExcludeFromCodeCoverage]

@@ -43,4 +43,4 @@ public class SqlConnectionFactory(string connectionString) : IDbConnectionFactor
             return false;
         }
     }
-} 
+}

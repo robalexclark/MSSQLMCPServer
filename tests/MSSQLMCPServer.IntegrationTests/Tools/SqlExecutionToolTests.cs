@@ -127,5 +127,19 @@ namespace MSSQLMCPServer.IntegrationTests.Tools
 
             Assert.Contains("Invalid T-SQL syntax", result);
         }
+
+        [Fact]
+        public async Task ExecuteSql_SelectQuery_NoRows_ReturnsNoRowsMessage()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("Id", typeof(int));
+
+            IDbConnectionFactory factory = new FakeExecuteSqlConnectionFactory(table);
+            SqlExecutionTool tool = new SqlExecutionTool(factory, NullLogger<SqlExecutionTool>.Instance);
+
+            string result = await tool.ExecuteSql("SELECT Id FROM Users WHERE 1=0");
+
+            Assert.Equal("Query executed successfully. No rows returned.", result);
+        }
     }
 }
