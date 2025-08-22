@@ -1,6 +1,7 @@
 ﻿using MSSQLMCPServer.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
 namespace MSSQLMCPServer.IntegrationTests.Configuration;
@@ -8,20 +9,21 @@ namespace MSSQLMCPServer.IntegrationTests.Configuration;
 /// <summary>
 /// Tests for DatabaseOptions configuration validation.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class DatabaseOptionsTests
 {
     [Fact]
     public void DatabaseOptionsValidator_WithValidConnectionString_ReturnsSuccess()
     {
         // Arrange
-        var validator = new DatabaseOptionsValidator();
-        var options = new DatabaseOptions
+        DatabaseOptionsValidator validator = new DatabaseOptionsValidator();
+        DatabaseOptions options = new DatabaseOptions
         {
             ConnectionString = "Server=localhost;Database=Test;Trusted_Connection=true;"
         };
 
         // Act
-        var result = validator.Validate(null, options);
+        ValidateOptionsResult result = validator.Validate(null, options);
 
         // Assert
         Assert.True(result.Succeeded);
@@ -31,14 +33,14 @@ public class DatabaseOptionsTests
     public void DatabaseOptionsValidator_WithEmptyConnectionString_ReturnsFail()
     {
         // Arrange
-        var validator = new DatabaseOptionsValidator();
-        var options = new DatabaseOptions
+        DatabaseOptionsValidator validator = new DatabaseOptionsValidator();
+        DatabaseOptions options = new DatabaseOptions
         {
             ConnectionString = ""
         };
 
         // Act
-        var result = validator.Validate(null, options);
+        ValidateOptionsResult result = validator.Validate(null, options);
 
         // Assert
         Assert.True(result.Failed);
@@ -49,14 +51,14 @@ public class DatabaseOptionsTests
     public void DatabaseOptionsValidator_WithNullConnectionString_ReturnsFail()
     {
         // Arrange
-        var validator = new DatabaseOptionsValidator();
-        var options = new DatabaseOptions
+        DatabaseOptionsValidator validator = new DatabaseOptionsValidator();
+        DatabaseOptions options = new DatabaseOptions
         {
             ConnectionString = null!
         };
 
         // Act
-        var result = validator.Validate(null, options);
+        ValidateOptionsResult result = validator.Validate(null, options);
 
         // Assert
         Assert.True(result.Failed);
@@ -67,14 +69,14 @@ public class DatabaseOptionsTests
     public void DatabaseOptionsValidator_WithWhitespaceConnectionString_ReturnsFail()
     {
         // Arrange
-        var validator = new DatabaseOptionsValidator();
-        var options = new DatabaseOptions
+        DatabaseOptionsValidator validator = new DatabaseOptionsValidator();
+        DatabaseOptions options = new DatabaseOptions
         {
             ConnectionString = "   "
         };
 
         // Act
-        var result = validator.Validate(null, options);
+        ValidateOptionsResult result = validator.Validate(null, options);
 
         // Assert
         Assert.True(result.Failed);
@@ -92,7 +94,7 @@ public class DatabaseOptionsTests
     public void DatabaseOptions_DefaultValues_AreCorrect()
     {
         // Arrange & Act
-        var options = new DatabaseOptions();
+        DatabaseOptions options = new DatabaseOptions();
 
         // Assert
         Assert.Equal(string.Empty, options.ConnectionString);
@@ -102,10 +104,10 @@ public class DatabaseOptionsTests
     public void DatabaseOptions_Integration_WithDependencyInjection()
     {
         // Arrange
-        var services = new ServiceCollection();
+        ServiceCollection services = new ServiceCollection();
         
         // Simulate configuration
-        var connectionString = "Server=localhost;Database=Test;Trusted_Connection=true;";
+        string connectionString = "Server=localhost;Database=Test;Trusted_Connection=true;";
         
         services.Configure<DatabaseOptions>(options =>
         {
@@ -114,10 +116,10 @@ public class DatabaseOptionsTests
         
         services.AddSingleton<IValidateOptions<DatabaseOptions>, DatabaseOptionsValidator>();
 
-        var serviceProvider = services.BuildServiceProvider();
+        ServiceProvider serviceProvider = services.BuildServiceProvider();
 
         // Act
-        var options = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>();
+        IOptions<DatabaseOptions> options = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>();
 
         // Assert
         Assert.NotNull(options);

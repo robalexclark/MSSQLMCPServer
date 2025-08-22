@@ -4,9 +4,11 @@ using System.Data;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MSSQLMCPServer.IntegrationTests.Fakes
 {
+    [ExcludeFromCodeCoverage]
     internal class FakeSqlConnection : DbConnection
     {
         private readonly Queue<DataTable> _tables;
@@ -57,7 +59,7 @@ namespace MSSQLMCPServer.IntegrationTests.Fakes
 
         protected override DbCommand CreateDbCommand()
         {
-            var table = _tables.Dequeue();
+            System.Data.DataTable table = _tables.Dequeue();
             return new FakeSqlCommand(table);
         }
     }

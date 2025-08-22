@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Data.Common;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MSSQLMCPServer.IntegrationTests.Fakes
 {
+    [ExcludeFromCodeCoverage]
     internal class FakeParameterCollection : DbParameterCollection
     {
         private readonly System.Collections.Generic.List<DbParameter> _parameters = new System.Collections.Generic.List<DbParameter>();

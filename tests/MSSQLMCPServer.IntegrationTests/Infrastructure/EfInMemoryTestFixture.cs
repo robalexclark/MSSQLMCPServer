@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MSSQLMCPServer.IntegrationTests.Infrastructure;
 
@@ -10,6 +11,7 @@ namespace MSSQLMCPServer.IntegrationTests.Infrastructure;
 /// EF Core InMemory-backed test fixture for integration tests.
 /// Provides a shared in-memory database and seed/reset helpers.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class EfInMemoryTestFixture : IAsyncLifetime
 {
     public TestDbContext Db { get; private set; } = null!;
@@ -65,6 +67,7 @@ public class EfInMemoryTestFixture : IAsyncLifetime
     }
 }
 
+[ExcludeFromCodeCoverage]
 public class TestDbContext : DbContext
 {
     public TestDbContext(DbContextOptions<TestDbContext> options) : base(options) { }
@@ -74,6 +77,7 @@ public class TestDbContext : DbContext
     public DbSet<Product> Products => Set<Product>();
 }
 
+[ExcludeFromCodeCoverage]
 public class User
 {
     public int Id { get; set; }
@@ -83,6 +87,7 @@ public class User
     public bool IsActive { get; set; } = true;
 }
 
+[ExcludeFromCodeCoverage]
 public class Order
 {
     public int Id { get; set; }
@@ -92,6 +97,7 @@ public class Order
     public string Status { get; set; } = "Pending";
 }
 
+[ExcludeFromCodeCoverage]
 public class Product
 {
     public int Id { get; set; }

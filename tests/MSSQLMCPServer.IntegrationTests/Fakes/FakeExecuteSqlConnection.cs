@@ -3,9 +3,11 @@ using System.Data;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MSSQLMCPServer.IntegrationTests.Fakes
 {
+    [ExcludeFromCodeCoverage]
     internal class FakeExecuteSqlConnection : DbConnection
     {
         private readonly DataTable _result;

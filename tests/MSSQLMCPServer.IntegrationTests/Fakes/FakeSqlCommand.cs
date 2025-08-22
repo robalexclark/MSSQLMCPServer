@@ -1,9 +1,11 @@
 ﻿using System.Data;
 using System.Data.Common;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MSSQLMCPServer.IntegrationTests.Fakes
 {
+    [ExcludeFromCodeCoverage]
     internal class FakeSqlCommand : DbCommand
     {
         private readonly DataTable _table;

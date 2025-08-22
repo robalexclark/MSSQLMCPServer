@@ -8,9 +8,11 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MSSQLMCPServer.IntegrationTests.Tools
 {
+    [ExcludeFromCodeCoverage]
     public partial class SqlExecutionToolTests
     {
         [Fact]

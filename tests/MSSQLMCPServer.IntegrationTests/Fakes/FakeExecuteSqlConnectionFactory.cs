@@ -4,11 +4,14 @@ using System.Data;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MSSQLMCPServer.IntegrationTests.Tools
 {
+    [ExcludeFromCodeCoverage]
     public partial class SqlExecutionToolTests
     {
+        [ExcludeFromCodeCoverage]
         private class FakeExecuteSqlConnectionFactory : IDbConnectionFactory
         {
             private readonly DataTable _result;
