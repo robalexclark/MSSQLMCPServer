@@ -1,0 +1,78 @@
+name: pr_validation
+
+on:
+  push:
+    branches:
+      - master
+      - dev
+      - main
+  pull_request:
+    branches:
+      - master
+      - dev
+      - main
+
+jobs:
+  test:
+    name: Test-${{matrix.os}}
+    runs-on: ${{matrix.os}}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4.2.2
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: "Install .NET SDK"
+        uses: actions/setup-dotnet@v4.3.1
+        with:
+          global-json-file: "./global.json"
+
+      - name: "Restore .NET tools"
+        run: dotnet tool restore
+
+      - name: "Update release notes"
+        shell: pwsh
+        run: |
+          ./build.ps1
+
+      - name: "dotnet build"
+        run: dotnet build -c Release
+
+      # .NET Framework tests can't run reliably on Linux, so we only do .NET 8
+
+      - name: "dotnet test"
+        shell: bash
+        run: dotnet test -c Release 
+
+  docker-build:
+    name: Docker Build Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4.2.2
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: "Install .NET SDK"
+        uses: actions/setup-dotnet@v4.3.1
+        with:
+          global-json-file: "./global.json"
+
+      - name: "Build Docker image"
+        run: |
+          dotnet publish src/MSSQLMCPServer/MSSQLMCPServer.csproj \
+            --os linux \
+            --arch x64 \
+            -c Release \
+            /t:PublishContainer
+
+      - name: "Verify Docker image exists"
+        run: docker images | grep mssql-mcp 

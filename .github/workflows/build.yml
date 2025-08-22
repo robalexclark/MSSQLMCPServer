@@ -1,0 +1,33 @@
+name: build
+
+on:
+  push:
+    branches: [ main, master, dev ]
+  pull_request:
+    branches: [ main, master, dev ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4.3.1
+        with:
+          global-json-file: './global.json'
+
+      - name: Restore .NET tools
+        run: dotnet tool restore
+
+      - name: dotnet build
+        run: dotnet build -c Release
+
+      - name: dotnet test
+        run: dotnet test -c Release
+

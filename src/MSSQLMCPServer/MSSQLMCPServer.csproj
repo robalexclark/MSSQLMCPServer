@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>MSSQLMCPServer</RootNamespace>
+    <AssemblyName>MSSQLMCPServer</AssemblyName>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <ContainerRepository>mssql-mcp</ContainerRepository>
+    <ContainerTitle>mssql-mcp</ContainerTitle>
+    <ContainerImageTags>$(VersionPrefix);latest</ContainerImageTags>
+    <ContainerRuntimeIdentifiers>linux-x64;linux-arm64;linux-arm;</ContainerRuntimeIdentifiers>
+    <RuntimeIdentifiers>osx-x64;osx-arm64;linux-x64;linux-arm64;linux-arm;win-x64;</RuntimeIdentifiers>
+    <!-- Remove parallel builds, to avoid race conditions -->
+    <ContainerPublishInParallel>false</ContainerPublishInParallel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
+    <PackageReference Include="ModelContextProtocol" Version="0.2.0-preview.3" />
+  </ItemGroup>
+
+</Project>

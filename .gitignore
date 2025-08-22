@@ -1,0 +1,50 @@
+# Visual Studio
+.vs/
+
+# Build results
+bin/
+obj/
+out/
+artifacts/
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+
+# User-specific
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+TestResult*/
+TestResults/
+
+# Coverlet/coverage
+coverage*/
+*.coverage
+*.coveragexml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Resharper/JetBrains
+_ReSharper*/
+*.DotSettings.user
+
+# Rider
+.idea/
+
+# Azure
+appsettings.Development.json
+local.settings.json
+
+# others
+*.tmp
+*.temp
+*.cache
+
