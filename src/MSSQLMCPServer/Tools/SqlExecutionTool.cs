@@ -181,20 +181,22 @@ Please provide only the T-SQL statement without explanations or formatting.";
 
                 string dbName = databaseNames[i];
                 string escapedDbName = dbName.Replace("]", "]]", StringComparison.Ordinal);
-                sb.Append($@"SELECT '{dbName}' AS DatabaseName,
-                                s.name AS SchemaName,
-                                t.name AS TableName,
-                                ISNULL(p.rows, 0) AS 'RowCount',
-                                t.type_desc AS TableType
-                            FROM [{escapedDbName}].sys.tables t
-                            JOIN [{escapedDbName}].sys.schemas s ON t.schema_id = s.schema_id
-                            LEFT JOIN (
-                                SELECT object_id, SUM(rows) AS rows
-                                FROM [{escapedDbName}].sys.partitions
-                                WHERE index_id IN (0,1)
-                                GROUP BY object_id
-                            ) p ON t.object_id = p.object_id");
+                sb.Append($@"
+                    SELECT '{dbName}' AS DatabaseName,
+                           s.name      COLLATE DATABASE_DEFAULT AS SchemaName,
+                           t.name      COLLATE DATABASE_DEFAULT AS TableName,
+                           ISNULL(p.rows, 0) AS [RowCount],
+                           t.type_desc COLLATE DATABASE_DEFAULT AS TableType
+                    FROM   [{escapedDbName}].sys.tables t
+                    JOIN   [{escapedDbName}].sys.schemas s ON t.schema_id = s.schema_id
+                    LEFT JOIN (
+                        SELECT object_id, SUM(rows) AS rows
+                        FROM   [{escapedDbName}].sys.partitions
+                        WHERE  index_id IN (0,1)
+                        GROUP BY object_id
+                    ) AS p ON t.object_id = p.object_id");
             }
+
             sb.AppendLine(" ORDER BY DatabaseName, SchemaName, TableName");
 
             await using System.Data.Common.DbCommand command = connection.CreateCommand();
