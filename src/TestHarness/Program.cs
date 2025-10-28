@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using MSSQLMCPServer.Database;
 using MSSQLMCPServer.Tools;
 
