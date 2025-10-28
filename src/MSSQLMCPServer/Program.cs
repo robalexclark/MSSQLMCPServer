@@ -48,26 +48,27 @@ public static class Program
         // Build the host
         IHost host = builder.Build();
 
-        // Test the database connection before running the host
-        IDbConnectionFactory dbFactory = host.Services.GetRequiredService<IDbConnectionFactory>();
-        try
-        {
-            bool isValid = await dbFactory.ValidateConnectionAsync();
-            if (!isValid)
-            {
-                await Console.Error.WriteLineAsync("Database connection test failed.");
-                Environment.Exit(1);
-                return;
-            }
-
-            Console.WriteLine("Database connection test succeeded.");
-        }
-        catch (Exception dbEx)
-        {
-            await Console.Error.WriteLineAsync($"Database connection test failed: {dbEx.Message}");
-            Environment.Exit(1);
-            return;
-        }
+        // NOTE: Startup validation is temporarily disabled to avoid blocking initialization
+        // when the SQL Server is unreachable from the hosting environment.
+        //IDbConnectionFactory dbFactory = host.Services.GetRequiredService<IDbConnectionFactory>();
+        //try
+        //{
+        //    bool isValid = await dbFactory.ValidateConnectionAsync();
+        //    if (!isValid)
+        //    {
+        //        await Console.Error.WriteLineAsync("Database connection test failed.");
+        //        Environment.Exit(1);
+        //        return;
+        //    }
+        //
+        //    Console.WriteLine("Database connection test succeeded.");
+        //}
+        //catch (Exception dbEx)
+        //{
+        //    await Console.Error.WriteLineAsync($"Database connection test failed: {dbEx.Message}");
+        //    Environment.Exit(1);
+        //    return;
+        //}
 
 
         // Setup cancellation token for graceful shutdown (Ctrl+C or SIGTERM)
